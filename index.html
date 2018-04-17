@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <style type="text/css">
+        .card{
+            width:200px;
+            border-radius:10px;
+            background-color:cyan;
+            padding:10px;
+            margin:10px;
+            display:inline-block;
+            box-shadow:black 5px 5px 5px;
+        }
+        marquee{
+            font-family:"Arial";
+            font-size:24pt;
+        }
+        #op{
+            background-color:red;         
+        }
+        button{
+            font-weight:bold;   text-decoration:none;
+            color:white;      border-radius:10px;            
+            padding:5px;        box-shadow:black 5px 5px 5px;      
+            cursor: pointer;    background-color:blue;
+        }
+        h1{
+            width:300px;        
+            padding:10px;       margin:10px;
+            border-radius:10px; box-shadow:black 5px 5px 5px;
+            display:inline-block;       
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script type="text/template" id="FDNYListingsTemplate">
+        <div class='card'>
+            <marquee>{{borough}}</marquee>
+            <p>{{location}}</p>
+            <p>{{facilityname}} <br><br>
+            {{facilityaddress}}</p>
+            <a href='https://www.google.com/maps/?q=+{{location}}' target='_blank'>Map</a>              
+        </div>
+    </script>
+
+    <script>
+
+
+    function loadJSON(){        
+        $.getJSON("https://data.cityofnewyork.us/resource/byk8-bdfw.json", function(data){
+            Fdnylist(data);
+        }); 
+    }
+    function Fdnylist(data){
+        var build = "";
+        var output = document.getElementById("op");
+        var bor = document.getElementById("borough").value;
+        var template = document.getElementById("FDNYListingsTemplate").innerHTML;
+        
+        
+        for(i=0; i<data.length; i++){
+            if (bor.toLowerCase().indexOf( data[i].borough.toLowerCase() ) != -1){
+                build += Mustache.render(template, data[i]);
+            }
+        }
+        output.innerHTML = build;    
+    }
+    </script>
+
+    <body>
+        <h1>FNDY Listings in NEWYORK</h1>
+        <h2>Enter A Borough</h2>
+        <br><input type="text" id="borough" placeholder="Enter NYC Borough" value="Queens">
+        <button onclick="loadJSON()">FDNY STATIONS</button>
+        <div id="op"></div>
+    </body>   
+</html>
+
